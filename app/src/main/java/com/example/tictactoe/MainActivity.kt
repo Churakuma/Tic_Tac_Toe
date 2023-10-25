@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.tictactoe.ui.theme.TicTacToeTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var viewModel: GameViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    GameScreen(gameViewModel = viewModel)
                 }
             }
         }

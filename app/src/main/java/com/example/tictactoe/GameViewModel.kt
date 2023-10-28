@@ -137,7 +137,6 @@ class GameViewModel: ViewModel() {
     }
 
     private fun isBoardFull(): Boolean {
-        if (boardItems.containsValue(BoardCellValue.NONE)) return false
-        else return true
+        return !boardItems.containsValue(BoardCellValue.NONE)
     }
 }

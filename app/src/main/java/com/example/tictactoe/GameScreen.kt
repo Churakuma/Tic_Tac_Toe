@@ -5,6 +5,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,8 +28,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,51 +47,80 @@ fun GameScreen(
     val state = gameViewModel.state
 
     Column(
-        modifier = Modifier
+        modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier
+                .padding(20.dp),
             text = "Tic Tac Toe",
             style = MaterialTheme.typography.titleLarge
         )
-        ButtonGrid() // TODO: Place Under the LazyVerticalGrid
-        LazyVerticalGrid(
+        Box(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .aspectRatio(1f),
-            columns = GridCells.Fixed(3),
-            content = {
-                gameViewModel.boardItems.forEach {(cellNo, boardCellValue) ->
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = MutableInteractionSource()
-                                ) {
-                                    gameViewModel.onAction(
-                                        UserAction.BoardTapped(cellNo)
-                                    )
-                                },
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            AnimatedVisibility(
-                                visible = gameViewModel.boardItems[cellNo] != BoardCellValue.NONE,
-                            enter = scaleIn(tween(1000))
-                            ){
-                                if (boardCellValue == BoardCellValue.NONE) {
-                                    Circle()
-                                } else if (boardCellValue == BoardCellValue.CROSS) {
-                                    Cross()
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .shadow(
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
+        ) {
+            BoardBase()
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .aspectRatio(1f),
+                columns = GridCells.Fixed(3),
+                content = {
+                    gameViewModel.boardItems.forEach {(cellNo, boardCellValue) ->
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
+                                    .clickable(
+                                        indication = null,
+                                        interactionSource = MutableInteractionSource()
+                                    ) {
+                                        gameViewModel.onAction(
+                                            UserAction.BoardTapped(cellNo)
+                                        )
+                                    },
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                AnimatedVisibility(
+                                    visible = gameViewModel.boardItems[cellNo] != BoardCellValue.NONE,
+                                    enter = scaleIn(tween(1000))
+                                ){
+                                    if (boardCellValue == BoardCellValue.NONE) {
+                                        Circle()
+                                    } else if (boardCellValue == BoardCellValue.CROSS) {
+                                        Cross()
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        )
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = state.hintText,
+                fontSize = 24.sp,
+                fontStyle = FontStyle.Italic
+            )
+        }
         ResetButton()
     }
 
@@ -155,14 +189,6 @@ fun BorderedBox() {
 fun PrevResetButton() {
     TicTacToeTheme {
         ResetButton()
-    }
-}
-
-@Preview
-@Composable
-fun PrevButtonGrid() {
-    TicTacToeTheme {
-        ButtonGrid()
     }
 }
 

@@ -34,7 +34,14 @@ class GameViewModel: ViewModel() {
     }
 
     private fun gameReset() {
-        TODO("Not yet implemented")
+        boardItems.forEach {(i,_) ->
+            boardItems[i] = BoardCellValue.NONE
+        }
+        state = state.copy(
+            hintText = "Player 'O' Turn",
+            currentTurn = BoardCellValue.CIRCLE,
+            hasWon = false
+        )
     }
 
     private fun addValueToBoard(cellNo: Int) {
@@ -43,10 +50,77 @@ class GameViewModel: ViewModel() {
         }
         if (state.currentTurn == BoardCellValue.CIRCLE) {
             boardItems[cellNo] = BoardCellValue.CIRCLE
-            state = state.copy(
-                hintText = "Player 'X' Turn",
-                currentTurn = BoardCellValue.CROSS
-            )
+            if (checkForVictory(BoardCellValue.CIRCLE)) {
+                state = state.copy(
+                    hintText = "Player 'O' Won!",
+                    currentTurn = BoardCellValue.CIRCLE,
+                    hasWon = true
+                )
+            } else if (isBoardFull()) {
+                state = state.copy(
+                    hintText = "Game is a Draw!"
+                )
+            } else {
+                state = state.copy(
+                    hintText = "Player 'X' Turn",
+                    currentTurn = BoardCellValue.CROSS
+                    // TODO: Create AI Player Logic
+                )
+            }
         }
+    }
+
+    private fun checkForVictory(boardValue: BoardCellValue): Boolean {
+        when {
+            // Horizontal win conditions
+            boardItems[1] == boardValue &&
+                    boardItems[2] == boardValue &&
+                    boardItems[3] == boardValue -> {
+                return true
+            }
+            boardItems[4] == boardValue &&
+                    boardItems[5] == boardValue &&
+                    boardItems[6] == boardValue -> {
+                        return true
+                    }
+            boardItems[7] == boardValue &&
+                    boardItems[8] == boardValue &&
+                    boardItems[9] == boardValue -> {
+                        return true
+                    }
+            // Vertical win conditions
+            boardItems[1] == boardValue &&
+                    boardItems[4] == boardValue &&
+                    boardItems[7] == boardValue -> {
+                        return true
+                    }
+            boardItems[2] == boardValue &&
+                    boardItems[5] == boardValue &&
+                    boardItems[8] == boardValue -> {
+                        return true
+                    }
+            boardItems[3] == boardValue &&
+                    boardItems[6] == boardValue &&
+                    boardItems[9] == boardValue -> {
+                        return true
+                    }
+            // Diagonal win conditions
+            boardItems[1] == boardValue &&
+                    boardItems[5] == boardValue &&
+                    boardItems[9] == boardValue -> {
+                        return true
+                    }
+            boardItems[3] == boardValue &&
+                    boardItems[5] == boardValue &&
+                    boardItems[7] == boardValue -> {
+                        return true
+                    }
+            else -> return false
+        }
+    }
+
+    private fun isBoardFull(): Boolean {
+        if (boardItems.containsValue(BoardCellValue.NONE)) return false
+        else return true
     }
 }

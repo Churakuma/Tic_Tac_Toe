@@ -140,39 +140,6 @@ fun ResetButton() {
 }
 
 @Composable
-fun ButtonGrid() {
-    Column(
-        modifier = Modifier,
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            BorderedBox()
-            BorderedBox()
-            BorderedBox()
-        }
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            BorderedBox()
-            BorderedBox()
-            BorderedBox()
-        }
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            BorderedBox()
-            BorderedBox()
-            BorderedBox()
-        }
-    }
-}
-
-@Composable
 fun BorderedBox() {
     Box(
         modifier = Modifier

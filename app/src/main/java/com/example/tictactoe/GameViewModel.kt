@@ -25,7 +25,6 @@ class GameViewModel: ViewModel() {
         when (action) {
             is UserAction.BoardTapped -> {
                 addValueToBoard(action.cellNo)
-
             }
             UserAction.PlayAgainButtonClicked -> {
                 gameReset()

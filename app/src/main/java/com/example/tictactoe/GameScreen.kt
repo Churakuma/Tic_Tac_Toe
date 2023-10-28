@@ -12,15 +12,26 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,15 +51,27 @@ fun GameScreen(
     val state = gameViewModel.state
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
+        Row(
             modifier = Modifier
-                .padding(20.dp),
-            text = "Tic Tac Toe",
-            style = MaterialTheme.typography.titleLarge
-        )
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(20.dp),
+                text = "Tic Tac Toe",
+                style = MaterialTheme.typography.titleLarge
+            )
+            GameModeSwitch(
+                singlePlayer = gameViewModel.singlePlayer,
+                onCheckedChange = gameViewModel.updatePlayerMode(singlePlayer = false)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,21 +137,60 @@ fun GameScreen(
                 fontStyle = FontStyle.Italic
             )
         }
-        Button(
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(bottom = 10.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Button(
+                modifier = Modifier,
                 onClick = {
                     gameViewModel.onAction(
                         UserAction.PlayAgainButtonClicked
                     )
                 }
-                ) {
-            Text(
-                modifier = Modifier,
-                text = "Restart",
-                style = MaterialTheme.typography.titleMedium
-            )
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = "Restart",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 
+}
+
+@Composable
+fun GameModeSwitch(singlePlayer: Boolean, onCheckedChange: Unit) {
+    var checkedState by remember { mutableStateOf(singlePlayer) } //TODO:  Not sure if Val or Var???
+
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = if (checkedState) "Single Player" else "Multiplayer")
+        Switch(
+            modifier = Modifier
+                .padding(horizontal = 10.dp),
+            checked = checkedState,
+            onCheckedChange = {
+                checkedState = it
+            },
+            thumbContent = {
+                if (checkedState) {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                    )
+                } else { null }
+            }
+        )
+    }
 }
 
 @Preview(showSystemUi = true)

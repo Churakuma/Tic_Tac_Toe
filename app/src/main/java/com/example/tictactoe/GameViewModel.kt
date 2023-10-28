@@ -9,6 +9,9 @@ class GameViewModel: ViewModel() {
 
     var state by mutableStateOf(GameUiState())
 
+    var singlePlayer by mutableStateOf(true)
+        private set
+
     val boardItems: MutableMap<Int, BoardCellValue> = mutableMapOf(
         1 to BoardCellValue.NONE,
         2 to BoardCellValue.NONE,
@@ -138,5 +141,10 @@ class GameViewModel: ViewModel() {
 
     private fun isBoardFull(): Boolean {
         return !boardItems.containsValue(BoardCellValue.NONE)
+    }
+
+    public fun updatePlayerMode(singlePlayer: Boolean) {
+        gameReset()
+        this.singlePlayer = singlePlayer
     }
 }

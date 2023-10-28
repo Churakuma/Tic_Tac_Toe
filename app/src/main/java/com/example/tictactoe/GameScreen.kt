@@ -96,7 +96,7 @@ fun GameScreen(
                                     visible = gameViewModel.boardItems[cellNo] != BoardCellValue.NONE,
                                     enter = scaleIn(tween(1000))
                                 ){
-                                    if (boardCellValue == BoardCellValue.NONE) {
+                                    if (boardCellValue == BoardCellValue.CIRCLE) {
                                         Circle()
                                     } else if (boardCellValue == BoardCellValue.CROSS) {
                                         Cross()
@@ -121,42 +121,21 @@ fun GameScreen(
                 fontStyle = FontStyle.Italic
             )
         }
-        ResetButton()
+        Button(
+                onClick = {
+                    gameViewModel.onAction(
+                        UserAction.PlayAgainButtonClicked
+                    )
+                }
+                ) {
+            Text(
+                modifier = Modifier,
+                text = "Restart",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 
-}
-
-@Composable
-fun ResetButton() {
-    Button(
-        onClick = { /*TODO*/ }
-    ) {
-        Text(
-            modifier = Modifier,
-            text = "Restart",
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
-
-@Composable
-fun BorderedBox() {
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .border(width = 1.dp, color = Color.Green)
-            .size(80.dp)
-    ) {
-    }
-
-}
-
-@Preview
-@Composable
-fun PrevResetButton() {
-    TicTacToeTheme {
-        ResetButton()
-    }
 }
 
 @Preview(showSystemUi = true)

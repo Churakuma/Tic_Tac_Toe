@@ -52,7 +52,7 @@ class GameViewModel: ViewModel() {
             if (checkForVictory(BoardCellValue.CIRCLE)) {
                 state = state.copy(
                     hintText = "Player 'O' Won!",
-                    currentTurn = BoardCellValue.CIRCLE,
+                    currentTurn = BoardCellValue.NONE,
                     hasWon = true
                 )
             } else if (isBoardFull()) {
@@ -64,6 +64,24 @@ class GameViewModel: ViewModel() {
                     hintText = "Player 'X' Turn",
                     currentTurn = BoardCellValue.CROSS
                     // TODO: Create AI Player Logic
+                )
+            }
+        } else if (state.currentTurn == BoardCellValue.CROSS) {
+            boardItems[cellNo] = BoardCellValue.CROSS
+            if (checkForVictory(BoardCellValue.CROSS)) {
+                state = state.copy(
+                    hintText = "Player 'X' Won!",
+                    currentTurn = BoardCellValue.NONE,
+                    hasWon = true
+                )
+            } else if (isBoardFull()) {
+                state = state.copy(
+                    hintText = "Game is a Draw!"
+                )
+            } else {
+                state = state.copy(
+                    hintText = "Player 'O' Turn",
+                    currentTurn = BoardCellValue.CIRCLE
                 )
             }
         }

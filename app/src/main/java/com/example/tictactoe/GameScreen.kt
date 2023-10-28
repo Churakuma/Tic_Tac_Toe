@@ -68,8 +68,7 @@ fun GameScreen(
                 style = MaterialTheme.typography.titleLarge
             )
             GameModeSwitch(
-                singlePlayer = gameViewModel.singlePlayer,
-                onCheckedChange = gameViewModel.updatePlayerMode(singlePlayer = false)
+                singlePlayer = gameViewModel.singlePlayer
             )
         }
         Box(
@@ -109,7 +108,8 @@ fun GameScreen(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 AnimatedVisibility(
-                                    visible = gameViewModel.boardItems[cellNo] != BoardCellValue.NONE,
+                                    visible = gameViewModel.boardItems[cellNo] !=
+                                            BoardCellValue.NONE,
                                     enter = scaleIn(tween(1000))
                                 ){
                                     if (boardCellValue == BoardCellValue.CIRCLE) {
@@ -164,8 +164,8 @@ fun GameScreen(
 }
 
 @Composable
-fun GameModeSwitch(singlePlayer: Boolean, onCheckedChange: Unit) {
-    var checkedState by remember { mutableStateOf(singlePlayer) } //TODO:  Not sure if Val or Var???
+fun GameModeSwitch(singlePlayer: Boolean) {
+    var checkedState by remember { mutableStateOf(singlePlayer) }
 
     Row(
         modifier = Modifier,

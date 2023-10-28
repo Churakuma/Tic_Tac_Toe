@@ -1,5 +1,7 @@
 package com.example.tictactoe
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,7 +31,7 @@ class GameViewModel: ViewModel() {
             is UserAction.BoardTapped -> {
                 addValueToBoard(action.cellNo)
             }
-            UserAction.PlayAgainButtonClicked -> {
+            is UserAction.PlayAgainButtonClicked -> {
                 gameReset()
             }
         }
@@ -44,29 +46,37 @@ class GameViewModel: ViewModel() {
             currentTurn = BoardCellValue.CIRCLE,
             hasWon = false
         )
+        Log.d(TAG, "RESETTING THE GAME...")
     }
 
     private fun addValueToBoard(cellNo: Int) {
         if (boardItems[cellNo] != BoardCellValue.NONE) {
+            Log.d(TAG, "This Space is not empty")
             return
         }
         if (state.currentTurn == BoardCellValue.CIRCLE) {
             boardItems[cellNo] = BoardCellValue.CIRCLE
+            Log.d(TAG, "CIRCLE Move played")
             if (checkForVictory(BoardCellValue.CIRCLE)) {
+                Log.d(TAG, "CIRCLE has won the game")
                 state = state.copy(
                     hintText = "Player 'O' Won!",
                     currentTurn = BoardCellValue.NONE,
                     hasWon = true
                 )
             } else if (isBoardFull()) {
+                Log.d(TAG, "This game is a draw")
                 state = state.copy(
                     hintText = "Game is a Draw!"
                 )
+            } else if (singlePlayer) {
+                Log.d(TAG, "It is now the computer's move")
+                computerMove()
             } else {
+                Log.d(TAG, "It is now CROSS player's turn")
                 state = state.copy(
                     hintText = "Player 'X' Turn",
                     currentTurn = BoardCellValue.CROSS
-                    // TODO: Create AI Player Logic
                 )
             }
         } else if (state.currentTurn == BoardCellValue.CROSS) {
@@ -88,6 +98,43 @@ class GameViewModel: ViewModel() {
                 )
             }
         }
+    }
+
+
+
+    private fun computerMove() {
+        val randomNumber = randomNumberGenerator()
+
+        if (boardItems[randomNumber] != BoardCellValue.NONE) {
+            Log.d(TAG, "The computer chose an incorrect square")
+            computerMove()
+        } else {
+            boardItems[randomNumber] = BoardCellValue.CROSS
+
+            if (checkForVictory(BoardCellValue.CROSS)) {
+                Log.d(TAG, "The computer has won")
+                state = state.copy(
+                    hintText = "Player 'X' Won!",
+                    currentTurn = BoardCellValue.NONE,
+                    hasWon = true
+                )
+            } else if (isBoardFull()) {
+                Log.d(TAG, "The computer has tied the game into a draw")
+                state = state.copy(
+                    hintText = "Game is a Draw!"
+                )
+            } else {
+                Log.d(TAG, "The computer has finished it's turn")
+                state = state.copy(
+                    hintText = "Player 'O' Turn",
+                    currentTurn = BoardCellValue.CIRCLE
+                )
+            }
+        }
+    }
+
+    private fun randomNumberGenerator(): Int {
+        return (1..9).random()
     }
 
     private fun checkForVictory(boardValue: BoardCellValue): Boolean {
@@ -143,7 +190,8 @@ class GameViewModel: ViewModel() {
         return !boardItems.containsValue(BoardCellValue.NONE)
     }
 
-    public fun updatePlayerMode(singlePlayer: Boolean) {
+    fun updatePlayerMode(singlePlayer: Boolean) {
+        Log.d(TAG, "Game mode has been changed")
         gameReset()
         this.singlePlayer = singlePlayer
     }
